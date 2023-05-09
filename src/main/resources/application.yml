@@ -28,12 +28,12 @@ spring:
       maximum-pool-size: 20
   sql:
     init:
-      data-locations: classpath:insert.sql
+#      data-locations: classpath:insert.sql
       mode: always
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     generate-ddl: true
     show-sql: true
     defer-datasource-initialization: true

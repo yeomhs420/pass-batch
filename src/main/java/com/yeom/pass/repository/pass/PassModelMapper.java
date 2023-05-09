@@ -1,5 +1,6 @@
 package com.yeom.pass.repository.pass;
 
+import com.yeom.pass.repository.user.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

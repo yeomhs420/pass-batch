@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface PassRepository extends JpaRepository<PassEntity, Integer> {
     @Transactional
@@ -14,4 +15,7 @@ public interface PassRepository extends JpaRepository<PassEntity, Integer> {
             "              p.modifiedAt = CURRENT_TIMESTAMP" +
             "        WHERE p.passSeq = :passSeq")
     int updateRemainingCount(Integer passSeq, Integer remainingCount);
+
+    List<PassEntity> findByUserId(String UserId);
+
 }

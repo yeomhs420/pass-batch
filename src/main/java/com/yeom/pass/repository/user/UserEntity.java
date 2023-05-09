@@ -11,11 +11,12 @@ import java.util.Map;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Entity
 @Table(name = "user")
 // json의 타입을 정의
 @TypeDef(name = "json", typeClass = JsonType.class)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends BaseEntity{

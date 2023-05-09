@@ -4,9 +4,7 @@ package com.yeom.pass.repository.booking;
 import com.yeom.pass.repository.BaseEntity;
 import com.yeom.pass.repository.pass.PassEntity;
 import com.yeom.pass.repository.user.UserEntity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +14,8 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "booking")
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

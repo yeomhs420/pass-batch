@@ -32,7 +32,6 @@ import java.util.TimerTask;
 @Configuration
 public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알람 설정
     private final int CHUNK_SIZE = 10;
-
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
@@ -47,13 +46,13 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
 
 
     @Bean
+    //@Scheduled(fixedDelay = 60000) // 1분마다 실행
     public Job sendNotificationBeforeClassJob() {
 
         return this.jobBuilderFactory.get("sendNotificationBeforeClassJob")
                 .start(addNotificationStep())
                 .next(sendNotificationStep())
                 .build();
-
     }
 
 
@@ -65,18 +64,16 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
                 .processor(addNotificationItemProcessor())
                 .writer(addNotificationItemWriter())
                 .build();
-
     }
 
     @Bean
     public JpaPagingItemReader<BookingEntity> addNotificationItemReader() {
-        // 상태(status)가 준비중이며, 시작일시(startedAt)이 10분 후 시작하는 예약이 알람 대상
         return new JpaPagingItemReaderBuilder<BookingEntity>()
                 .name("addNotificationItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(CHUNK_SIZE)
                 .queryString("select b from BookingEntity b join fetch b.userEntity where b.status = :status and " +
-                        "b.startedAt = :startedAt order by b.bookingSeq")  // join fetch 를 사용하게 되면 연관된 엔티티까지 한번에 가져옴 ( FetchType.LAZY 로 인한 1+N 문제 해결)
+                        "b.startedAt = :startedAt order by b.bookingSeq")  // join fetch 연관된 엔티티까지 한번에 가져옴 ( FetchType.LAZY 로 인한 1+N 문제 해결)
                 .parameterValues(Map.of("status", BookingStatus.READY,"startedAt", LocalDateTime.now().plusMinutes(10)))
                 .build();
     }
@@ -91,7 +88,6 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
         return new JpaItemWriterBuilder<NotificationEntity>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
-
     }
 
     @Bean
@@ -115,11 +111,9 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
                 .parameterValues(Map.of("event", NotificationEvent.BEFORE_CLASS, "sent", false))
                 .build();
 
-
         return new SynchronizedItemStreamReaderBuilder<NotificationEntity>()    // 각 스레드가 대기하고 있다가 itemReader 를 순차적으로 실행시킴
                 .delegate(itemReader)
                 .build();
-
     }
 
 }

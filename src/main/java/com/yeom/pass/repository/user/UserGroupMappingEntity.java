@@ -1,6 +1,7 @@
 package com.yeom.pass.repository.user;
 
 import com.yeom.pass.repository.BaseEntity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,11 +13,11 @@ import javax.persistence.Table;
 
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString
 @Table(name = "user_group_mapping")
 @IdClass(UserGroupMappingId.class)
-public class UserGroupMappingEntity extends BaseEntity {
+public class UserGroupMappingEntity{
     @Id
     private String userGroupId;
     @Id

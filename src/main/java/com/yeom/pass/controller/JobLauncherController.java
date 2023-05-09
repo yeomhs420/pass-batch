@@ -27,18 +27,17 @@ public class JobLauncherController {
     public ExitStatus launchJob(@RequestBody JobLauncherRequest request) throws Exception{
         Job job = jobRegistry.getJob(request.getName());
 
+        System.out.println(request.getJobParameters().toString());
+
         return this.jobLauncher.run(job, request.getJobParameters()).getExitStatus();
     }
+
+//    @PostMapping("launcher_usePass")
+//    public ExitStatus launcher_usePass(@RequestBody JobLauncherRequest request) throws Exception{
+//        Job job = jobRegistry.getJob(request.getName());
 //
-    @PostMapping("launcher_usePass")    // http://localhost:8081/job/launcher_usePass?name=addPassesJob&userId=yeomhs420
-    public ExitStatus launcher_usePass(@ModelAttribute JobLauncherRequest request) throws Exception{
-        Job job = jobRegistry.getJob(request.getName());
+//        return this.jobLauncher.run(job, request.getJobParameters()).getExitStatus();
+//    }
 
-        Properties properties = new Properties();
-        properties.setProperty("userId",request.getUserId());
 
-        JobParameters jobParameters = new JobParametersBuilder(properties).toJobParameters();
-
-        return this.jobLauncher.run(job, jobParameters).getExitStatus();
-    }
 }

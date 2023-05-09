@@ -64,7 +64,7 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
     public Step usePassesStep() {
         return this.stepBuilderFactory.get("usePassesStep")
                 .<BookingEntity, Future<BookingEntity>>chunk(CHUNK_SIZE)
-                .reader(usePassesItemReader(null))
+                .reader(usePassesItemReader(null, 0))
                 .processor(usePassesAsyncItemProcessor())
                 .writer(usePassesAsyncItemWriter())
                 .allowStartIfComplete(true)// 완료된 스텝 재실행하기
@@ -84,14 +84,15 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<BookingEntity> usePassesItemReader(@Value("#{jobParameters[userId]}") String userId) {    //@Value("#{jobParameters[userId]}") String userId
-
+    public JpaCursorItemReader<BookingEntity> usePassesItemReader(@Value("#{jobParameters[userId]}") String userId, @Value("#{jobParameters[passSeq]}") int passSeq)
+    {
         return new JpaCursorItemReaderBuilder<BookingEntity>()
                 .name("usePassesItemReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select b from BookingEntity b join fetch b.passEntity where b.status = :status and b.usedPass = false and b.endedAt < :endedAt and b.userId = :userId")
-                .parameterValues(Map.of("status", BookingStatus.COMPLETED, "endedAt", LocalDateTime.now(), "userId", userId))
-                .build();
+                .queryString("select b from BookingEntity b join fetch b.passEntity where b.status = :status and b.usedPass = false and b.userId = :userId and b.passSeq = :passSeq")
+                // usedPass = false 로 예약 두번 이상 불가
+                .parameterValues(Map.of("status", BookingStatus.READY, "userId", userId, "passSeq", passSeq)) // "endedAt", LocalDateTime.now(),
+                .build();   // join fetch : 엔티티들 간의 관계를 맺고 있는 경우 지연 로딩(lazy loading) 대신에 즉시 로딩(eager loading)을 수행
     }
 
     @Bean
@@ -109,7 +110,7 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
             passEntity.setRemainingCount(passEntity.getRemainingCount() - 1);
             bookingEntity.setPassEntity(passEntity);
 
-            bookingEntity.setUsedPass(true);
+            bookingEntity.setUsedPass(true);    // 예약으로 인한 이용권 1회 소진
             return bookingEntity;
         };
     }
