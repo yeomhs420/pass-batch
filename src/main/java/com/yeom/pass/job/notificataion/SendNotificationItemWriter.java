@@ -26,6 +26,7 @@ public class SendNotificationItemWriter implements ItemWriter<NotificationEntity
         int count = 0;
 
         for (NotificationEntity notificationEntity : notificationEntities) {
+            System.out.println(notificationEntity.toString());
             boolean successful = kakaoTalkMessageAdapter.sendKakaoTalkMessage(notificationEntity.getUuid(), notificationEntity.getText());
 
             if (successful) {

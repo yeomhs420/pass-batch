@@ -19,6 +19,7 @@ import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -37,6 +38,7 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
     private final EntityManagerFactory entityManagerFactory;
     private final SendNotificationItemWriter sendNotificationItemWriter;
 
+
     public SendNotificationBeforeClassJobConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EntityManagerFactory entityManagerFactory, SendNotificationItemWriter sendNotificationItemWriter) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
@@ -46,9 +48,7 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
 
 
     @Bean
-    //@Scheduled(fixedDelay = 60000) // 1분마다 실행
     public Job sendNotificationBeforeClassJob() {
-
         return this.jobBuilderFactory.get("sendNotificationBeforeClassJob")
                 .start(addNotificationStep())
                 .next(sendNotificationStep())
@@ -74,7 +74,7 @@ public class SendNotificationBeforeClassJobConfig { // 예약된 수업 전 알�
                 .pageSize(CHUNK_SIZE)
                 .queryString("select b from BookingEntity b join fetch b.userEntity where b.status = :status and " +
                         "b.startedAt = :startedAt order by b.bookingSeq")  // join fetch 연관된 엔티티까지 한번에 가져옴 ( FetchType.LAZY 로 인한 1+N 문제 해결)
-                .parameterValues(Map.of("status", BookingStatus.READY,"startedAt", LocalDateTime.now().plusMinutes(10)))
+                .parameterValues(Map.of("status", BookingStatus.READY)) // startedAt", LocalDateTime.now().plusMinutes(10)
                 .build();
     }
 

@@ -3,6 +3,7 @@ package com.yeom.pass.util;
 import com.vladmihalcea.hibernate.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -28,6 +29,7 @@ public class LocalDateTimeUtils {
         return LocalDateTime.parse(localDateTimeString, YYYY_MM_DD_HH_MM);
 
     }
+
 
     public static int getWeekOfYear(final LocalDateTime localDateTime) {
         return localDateTime.get(WeekFields.of(Locale.KOREA).weekOfYear());

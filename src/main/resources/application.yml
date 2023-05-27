@@ -45,3 +45,8 @@ spring:
       enabled: false  # 등록되어 있는 job 실행 비활성화
       #names: ${job.name:NONE}
 #--job.name=addPassesJob
+
+kakao:
+  rest:
+    api:
+      key: dfd7b648f50097b96a245feac1f8bdd4
