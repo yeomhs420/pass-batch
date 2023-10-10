@@ -62,7 +62,7 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
     public Job usePassesJob() {
         return this.jobBuilderFactory.get("usePassesJob")
                 //.incrementer(new RunIdIncrementer())
-                .start(AddReserveStep())
+                .start(addReserveStep())
                 .next(usePassesStep()) // 예약 인원 증가
                 .build();
 
@@ -154,7 +154,7 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
 
 
     @Bean
-    public Step AddReserveStep() {
+    public Step addReserveStep() {
         return this.stepBuilderFactory.get("AddReserveStep")
                 .<InstructDateTime, InstructDateTime>chunk(CHUNK_SIZE)
                 .reader(addReserveItemReader(0))

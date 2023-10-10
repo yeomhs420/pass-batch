@@ -55,8 +55,11 @@ public class AddPassesTasklet implements Tasklet{
             final List<String> userIds = userGroupMappingRepository.findByUserGroupId(bulkPassEntity.getUserGroupId())
                     .stream().map(UserGroupMappingEntity::getUserId).collect(Collectors.toList());  // 해당 그룹의 모든 userid 반환
 
-            count += addPasses(bulkPassEntity, userIds);
-            count2 += addBooking(userIds);
+//            count += addPasses(bulkPassEntity, userIds);
+//            count2 += addBooking(userIds);
+
+            count += addPasses(bulkPassEntity, bulkPassEntity.getUserId());
+            count2 += addBooking(bulkPassEntity.getUserId());
 
             bulkPassEntity.setStatus(BulkPassStatus.COMPLETED);
 
@@ -70,32 +73,50 @@ public class AddPassesTasklet implements Tasklet{
 
 
     // bulkPass 정보로 pass 데이터를 생성
-    private int addPasses(BulkPassEntity bulkPassEntity, List<String> userIds) {
+    private int addPasses(BulkPassEntity bulkPassEntity, String userId) {
         List<PassEntity> passEntities = new ArrayList<>();
 
-        for(String userId: userIds) {
-            PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity, userId);  // bulkPassEntity -> PassEntity
-            passEntities.add(passEntity);
-        }
+//        for(String userId: userIds) {
+//            PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity, userId);  // bulkPassEntity -> PassEntity
+//            passEntities.add(passEntity);
+//        }
+
+        PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity, userId);  // bulkPassEntity -> PassEntity
+        passEntities.add(passEntity);
+
         return passRepository.saveAll(passEntities).size();
     }
 
-    private int addBooking(List<String> userIds){
+    private int addBooking(String userId){   //List<String> userIds
         List<BookingEntity> bookingEntities = new ArrayList<>();
-        for(String userId:userIds){
-            BookingEntity booking = new BookingEntity();
-            for(int i=0;i<passRepository.findByUserId(userId).size();i++){
-                booking.setPassSeq(passRepository.findByUserId(userId).get(i).getPassSeq());
-            }
-            booking.setUserId(userId);  // 추후 수정
-            booking.setStatus(BookingStatus.READY);
-            booking.setUsedPass(false);
-            booking.setAttended(false);
-            booking.setStartedAt(null);
-            booking.setEndedAt(null);
-            booking.setCancelledAt(null);
-            bookingEntities.add(booking);
+//        for(String userId:userIds){
+//            BookingEntity booking = new BookingEntity();
+//            for(int i=0;i<passRepository.findByUserId(userId).size();i++){
+//                booking.setPassSeq(passRepository.findByUserId(userId).get(i).getPassSeq());
+//            }
+//            booking.setUserId(userId);  // 추후 수정
+//            booking.setStatus(BookingStatus.READY);
+//            booking.setUsedPass(false);
+//            booking.setAttended(false);
+//            booking.setStartedAt(null);
+//            booking.setEndedAt(null);
+//            booking.setCancelledAt(null);
+//            bookingEntities.add(booking);
+//        }
+
+        BookingEntity booking = new BookingEntity();
+        for(int i=0;i<passRepository.findByUserId(userId).size();i++){
+            booking.setPassSeq(passRepository.findByUserId(userId).get(i).getPassSeq());
         }
+        booking.setUserId(userId);  // 추후 수정
+        booking.setStatus(BookingStatus.READY);
+        booking.setUsedPass(false);
+        booking.setAttended(false);
+        booking.setStartedAt(null);
+        booking.setEndedAt(null);
+        booking.setCancelledAt(null);
+        bookingEntities.add(booking);
+
         return bookingRepository.saveAll(bookingEntities).size();
     }
 }

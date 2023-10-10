@@ -18,6 +18,7 @@ public class BulkPassEntity {
     private Integer bulkPassSeq;
     private Integer packageSeq;
     private String userGroupId;
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     private BulkPassStatus status;

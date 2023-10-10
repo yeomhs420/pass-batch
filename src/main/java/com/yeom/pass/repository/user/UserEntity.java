@@ -16,10 +16,11 @@ import java.util.Map;
 @Table(name = "user")
 // json의 타입을 정의
 @TypeDef(name = "json", typeClass = JsonType.class)
-@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity extends BaseEntity{
+public class UserEntity{
+
     @Id
     private String userId;
 
