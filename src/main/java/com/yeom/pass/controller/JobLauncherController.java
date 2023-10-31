@@ -29,7 +29,7 @@ public class JobLauncherController {
 
         System.out.println(request.getJobParameters().toString());
 
-        return this.jobLauncher.run(job, request.getJobParameters()).getExitStatus();
+        return this.jobLauncher.run(job, request.getJobParameters()).getExitStatus();   // job 이름을 통해 이동
     }
 
 //    @PostMapping("launcher_usePass")
