@@ -132,7 +132,7 @@ public class UsePassesJobConfig {   // 수업 종료 후 이용권 차감
     }
 
     @Bean
-    public AsyncItemWriter<BookingEntity> usePassesAsyncItemWriter() {  // AsyncItemWriter : 실행 결과 값들(List<Future)을 모두 받아오기 까지 대기
+    public AsyncItemWriter<BookingEntity> usePassesAsyncItemWriter() {  // AsyncItemWriter : 실행 결과 값들이 넘어올때마다 개별적으로 처리 -> 비동기 처리 (병렬 실행)
         AsyncItemWriter<BookingEntity> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(usePassesItemWriter());
         return asyncItemWriter;
